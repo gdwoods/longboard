@@ -15,10 +15,11 @@ const authedLinks = [
   { href: "/tradezero", label: "TradeZero (Live)" },
 ] as const;
 
-// Public link — always visible, logged in or not. Sits at the end of
-// the authed link cluster for logged-in users, and renders standalone
-// for anon visitors who'd otherwise see no links at all.
-const learnLink = { href: "/learn", label: "Learn" } as const;
+// Public links — always visible, logged in or not.
+const publicLinks = [
+  { href: "/arena/feed", label: "Arena" },
+  { href: "/learn", label: "Learn" },
+] as const;
 
 type Me = {
   id: string;
@@ -69,9 +70,9 @@ export default function DashboardNav() {
 
   const links = loggedIn
     ? me?.role === "admin"
-      ? [...authedLinks, learnLink, { href: "/admin", label: "Admin" } as const]
-      : [...authedLinks, learnLink]
-    : [learnLink];
+      ? [...authedLinks, ...publicLinks, { href: "/admin", label: "Admin" } as const]
+      : [...authedLinks, ...publicLinks]
+    : [...publicLinks];
 
   return (
     <nav style={{
@@ -88,9 +89,9 @@ export default function DashboardNav() {
         LONGBOARD.AI
       </a>
 
-      {/* Center — nav links, logged-in only */}
+      {/* Center — nav links */}
       <div style={{ display: "flex", gap: 6 }}>
-        {loggedIn && links.map(({ href, label }) => {
+        {links.map(({ href, label }) => {
           const active = pathname.startsWith(href);
           const isTZ = href === "/tradezero";
 
